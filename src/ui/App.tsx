@@ -83,7 +83,9 @@ export default function App() {
           <div className="grid grid-cols-2 gap-4">
             <Card delay={160} className="flex flex-col items-center text-center">
               <h3 className="text-base font-bold text-felt">🀄 행운의 패</h3>
-              <TileImage tile={fortune.luckyTile} className="my-3 w-16 sm:w-20" />
+              <div className="my-3 rounded-xl bg-gradient-to-br from-felt-dark to-felt p-3 shadow-inner">
+                <TileImage tile={fortune.luckyTile} className="w-14 sm:w-16" />
+              </div>
               <p className="text-2xl font-bold text-accent">{fortune.luckyTile.name}</p>
             </Card>
             <Card delay={240} className="flex flex-col items-center justify-center text-center">

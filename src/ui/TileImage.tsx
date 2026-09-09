@@ -7,7 +7,7 @@ export function TileImage({ tile, className = '' }: { tile: Tile; className?: st
       src={`${import.meta.env.BASE_URL}tiles/${tile.file}`}
       alt={tile.name}
       draggable={false}
-      className={`select-none drop-shadow-md ${className}`}
+      className={`select-none rounded-md ring-1 ring-black/20 drop-shadow-md ${className}`}
     />
   )
 }
