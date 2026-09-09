@@ -1,4 +1,4 @@
-import { isTerminal, isYaochu, type Tile } from './tiles'
+import { isHonor, isTerminal, isYaochu, type Tile } from './tiles'
 
 export interface YakuEntry {
   name: string
@@ -17,7 +17,7 @@ export const YAKUMAN: readonly string[] = [
 const NORMAL_YAKU: readonly string[] = [
   '리치', '일발', '멘젠쯔모', '탕야오', '핑후', '역패', '이페코', '하테이', '호테이', '영상개화',
   '창깡', '더블리치', '치또이츠', '삼색동순', '삼색동각', '일기통관', '찬타', '준찬타', '혼노두', '산안커',
-  '산깡즈', '소삼원', '도이도이', '량페코', '혼일색', '청일색',
+  '산깡즈', '소삼원', '또이또이', '량페코', '혼일색', '청일색',
 ]
 
 export const YAKU_ENTRIES: readonly YakuEntry[] = [
@@ -28,6 +28,9 @@ export const YAKU_ENTRIES: readonly YakuEntry[] = [
 export const YAKU: readonly string[] = YAKU_ENTRIES.map((e) => e.name)
 export const YAKU_WEIGHTS: readonly number[] = YAKU_ENTRIES.map((e) => e.weight)
 
+/** 삼원패: 백·발·중 (자패 rank 5·6·7) */
+const isDragon = (t: Tile) => t.suit === 'z' && t.rank >= 5
+
 /** 역별 행운의 패 제약. 없으면 34종 전체. */
 export const YAKU_TILE_FILTER: Record<string, (t: Tile) => boolean> = {
   찬타: isYaochu,
@@ -35,4 +38,7 @@ export const YAKU_TILE_FILTER: Record<string, (t: Tile) => boolean> = {
   준찬타: isTerminal,
   청노두: isTerminal,
   녹일색: (t) => (t.suit === 's' && [2, 3, 4, 6, 8].includes(t.rank)) || (t.suit === 'z' && t.rank === 6),
+  소삼원: isDragon,
+  대삼원: isDragon,
+  역패: isHonor,
 }
