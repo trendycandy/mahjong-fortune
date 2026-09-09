@@ -9,7 +9,7 @@ export function TileImage({ tile, className = '' }: { tile: Tile; className?: st
     <span
       role="img"
       aria-label={tile.name}
-      className={`relative block aspect-[3/4] overflow-hidden rounded-md shadow-md ${className}`}
+      className={`relative block aspect-[3/4] overflow-hidden rounded-md ring-1 ring-slate-300 shadow-md ${className}`}
     >
       <img src={`${TILE_DIR}Front.svg`} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
       <img src={`${TILE_DIR}${tile.file}`} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
