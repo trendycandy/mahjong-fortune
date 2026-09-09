@@ -45,12 +45,18 @@ describe('data pools', () => {
     const all = [...YAKU, ...Object.values(HEADLINES).flat(), ...Object.values(COMMENTS).flat(), ...Object.values(TIPS).flat(), ...COMMON_TIPS]
     expect(YAKU).toContain('또이또이')
     expect(all.some((s) => s.includes('도이도이'))).toBe(false)
+    expect(all.some((s) => s.includes('하테이') || s.includes('호테이'))).toBe(false)
   })
   it('dragon/honor constraints', () => {
     const names = (y: string) => TILES.filter(YAKU_TILE_FILTER[y]).map((t) => t.name)
     expect(names('소삼원')).toEqual(['백', '발', '중'])
     expect(names('대삼원')).toEqual(['백', '발', '중'])
     expect(names('역패')).toEqual(['동', '남', '서', '북', '백', '발', '중'])
+    expect(names('자일색')).toEqual(['동', '남', '서', '북', '백', '발', '중'])
+    expect(names('소사희')).toEqual(['동', '남', '서', '북'])
+    expect(names('대사희')).toEqual(['동', '남', '서', '북'])
+    expect(YAKU).toContain('해저로월')
+    expect(YAKU).toContain('하저로어')
   })
   it('no 🎴 anywhere', () => {
     const all = [
