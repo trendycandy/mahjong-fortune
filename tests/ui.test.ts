@@ -21,5 +21,9 @@ describe('share text', () => {
     for (const s of [f.grade, f.headline, f.luckyTile.name, f.luckyYaku, f.tip, 'https://example.test/', '#마작운세']) expect(t).toContain(s)
     expect(t.startsWith('🀄 2026년 9월 9일 마작 운세')).toBe(true)
     expect(t.includes('🎴')).toBe(false)
+    const s = f.stars
+    expect(t).toContain(`공격운 ${'★'.repeat(s.attack)}${'☆'.repeat(5 - s.attack)}`)
+    expect(t).toContain(`흐름운 ${'★'.repeat(s.flow)}${'☆'.repeat(5 - s.flow)}`)
+    expect(t).not.toMatch(/공격 \d/)
   })
 })

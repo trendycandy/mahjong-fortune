@@ -4,6 +4,7 @@ import { GRADES, GRADE_WEIGHTS, STAR_KEYS } from '../src/data/grades'
 import { HEADLINES } from '../src/data/headlines'
 import { COMMENTS, LOW_COMMENTS } from '../src/data/comments'
 import { TIPS, COMMON_TIPS } from '../src/data/tips'
+import { YAKUMAN, YAKU_TILE_FILTER } from '../src/data/yaku'
 
 describe('generateFortune', () => {
   it('deterministic', () => {
@@ -59,5 +60,23 @@ describe('generateFortune', () => {
     }
     expect(sums['대길'][0] / sums['대길'][1]).toBeGreaterThan(sums['흉'][0] / sums['흉'][1])
     expect(lowCount).toBeGreaterThan(100)
+  })
+
+  it('yakuman appear but rarely (<1% combined over 100k), and tiles obey yaku constraints', () => {
+    const n = 100_000
+    let yakuman = 0
+    const seen: Record<string, number> = {}
+    for (let i = 0; i < n; i++) {
+      const f = generateFortune(`y${i}`, '2026-05-05')
+      if (YAKUMAN.includes(f.luckyYaku)) yakuman++
+      const filter = YAKU_TILE_FILTER[f.luckyYaku]
+      if (filter) {
+        seen[f.luckyYaku] = (seen[f.luckyYaku] ?? 0) + 1
+        expect(filter(f.luckyTile), `${f.luckyYaku} → ${f.luckyTile.name}`).toBe(true)
+      }
+    }
+    expect(yakuman).toBeGreaterThan(0)
+    expect(yakuman / n).toBeLessThan(0.01)
+    for (const y of Object.keys(YAKU_TILE_FILTER)) expect(seen[y], y).toBeGreaterThan(0)
   })
 })
