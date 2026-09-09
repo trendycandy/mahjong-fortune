@@ -1,0 +1,58 @@
+import { describe, it, expect } from 'vitest'
+import { generateFortune } from '../src/engine/fortune'
+import { GRADES, GRADE_WEIGHTS, STAR_KEYS } from '../src/data/grades'
+import { HEADLINES } from '../src/data/headlines'
+import { COMMENTS } from '../src/data/comments'
+import { TIPS, COMMON_TIPS } from '../src/data/tips'
+
+describe('generateFortune', () => {
+  it('deterministic', () => {
+    expect(generateFortune('u1', '2026-09-09')).toEqual(generateFortune('u1', '2026-09-09'))
+  })
+
+  it('differs across users and dates', () => {
+    let diffUser = 0
+    let diffDate = 0
+    for (let i = 0; i < 100; i++) {
+      const a = generateFortune(`u${i}`, '2026-09-09')
+      if (a.headline !== generateFortune(`v${i}`, '2026-09-09').headline) diffUser++
+      if (a.headline !== generateFortune(`u${i}`, '2026-09-10').headline) diffDate++
+    }
+    expect(diffUser).toBeGreaterThanOrEqual(95)
+    expect(diffDate).toBeGreaterThanOrEqual(95)
+  })
+
+  it('grade distribution matches weights (±1.5%p over 100k)', () => {
+    const n = 100_000
+    const count: Record<string, number> = {}
+    for (let i = 0; i < n; i++) {
+      const g = generateFortune(`user-${i}`, '2026-01-01').grade
+      count[g] = (count[g] ?? 0) + 1
+    }
+    const total = GRADE_WEIGHTS.reduce((a, b) => a + b, 0)
+    GRADES.forEach((g, i) => expect(Math.abs(count[g] / n - GRADE_WEIGHTS[i] / total)).toBeLessThan(0.015))
+  })
+
+  it('stars are ints 1..5; 대길 mean > 흉 mean; content consistent', () => {
+    const sums: Record<string, number[]> = { 대길: [0, 0], 흉: [0, 0] }
+    for (let i = 0; i < 20_000; i++) {
+      const f = generateFortune(`s${i}`, '2026-03-03')
+      const vals = STAR_KEYS.map((k) => f.stars[k])
+      for (const v of vals) {
+        expect(Number.isInteger(v)).toBe(true)
+        expect(v).toBeGreaterThanOrEqual(1)
+        expect(v).toBeLessThanOrEqual(5)
+      }
+      if (sums[f.grade]) {
+        sums[f.grade][0] += vals.reduce((s, v) => s + v, 0)
+        sums[f.grade][1]++
+      }
+      expect(HEADLINES[f.grade]).toContain(f.headline)
+      expect(COMMENTS[f.topKey]).toContain(f.comment)
+      expect(f.stars[f.topKey]).toBe(Math.max(...vals))
+      expect(f.stars[f.lowKey]).toBe(Math.min(...vals))
+      expect([...TIPS[f.lowKey], ...COMMON_TIPS]).toContain(f.tip)
+    }
+    expect(sums['대길'][0] / sums['대길'][1]).toBeGreaterThan(sums['흉'][0] / sums['흉'][1])
+  })
+})
