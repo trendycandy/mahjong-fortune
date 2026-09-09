@@ -3,7 +3,7 @@ import { GRADES, GRADE_WEIGHTS, STAR_BASE, STAR_KEYS, type Grade, type StarKey }
 import { TILES, type Tile } from '../data/tiles'
 import { YAKU } from '../data/yaku'
 import { HEADLINES } from '../data/headlines'
-import { COMMENTS } from '../data/comments'
+import { COMMENTS, LOW_COMMENTS } from '../data/comments'
 import { TIPS, COMMON_TIPS } from '../data/tips'
 
 export type Star = 1 | 2 | 3 | 4 | 5
@@ -41,7 +41,8 @@ export function generateFortune(userId: string, dateKey: string): Fortune {
 
   const max = Math.max(...STAR_KEYS.map((k) => stars[k]))
   const topKey = rng.pick(STAR_KEYS.filter((k) => stars[k] === max))
-  const comment = rng.pick(COMMENTS[topKey])
+  // 최고 별점이 2 이하면 긍정 코멘트가 어색하므로 낮은 톤 풀에서 뽑는다 (rng 소비 횟수는 동일).
+  const comment = rng.pick(max <= 2 ? LOW_COMMENTS[topKey] : COMMENTS[topKey])
 
   const luckyTile = rng.pick(TILES)
   const luckyYaku = rng.pick(YAKU)

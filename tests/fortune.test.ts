@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { generateFortune } from '../src/engine/fortune'
 import { GRADES, GRADE_WEIGHTS, STAR_KEYS } from '../src/data/grades'
 import { HEADLINES } from '../src/data/headlines'
-import { COMMENTS } from '../src/data/comments'
+import { COMMENTS, LOW_COMMENTS } from '../src/data/comments'
 import { TIPS, COMMON_TIPS } from '../src/data/tips'
 
 describe('generateFortune', () => {
@@ -35,9 +35,11 @@ describe('generateFortune', () => {
 
   it('stars are ints 1..5; 대길 mean > 흉 mean; content consistent', () => {
     const sums: Record<string, number[]> = { 대길: [0, 0], 흉: [0, 0] }
+    let lowCount = 0
     for (let i = 0; i < 20_000; i++) {
       const f = generateFortune(`s${i}`, '2026-03-03')
       const vals = STAR_KEYS.map((k) => f.stars[k])
+      if (Math.max(...vals) <= 2) lowCount++
       for (const v of vals) {
         expect(Number.isInteger(v)).toBe(true)
         expect(v).toBeGreaterThanOrEqual(1)
@@ -48,11 +50,14 @@ describe('generateFortune', () => {
         sums[f.grade][1]++
       }
       expect(HEADLINES[f.grade]).toContain(f.headline)
-      expect(COMMENTS[f.topKey]).toContain(f.comment)
+      const pool = Math.max(...vals) <= 2 ? LOW_COMMENTS[f.topKey] : COMMENTS[f.topKey]
+      expect(pool).toContain(f.comment)
+      expect(Math.max(...vals) <= 2 ? COMMENTS[f.topKey] : LOW_COMMENTS[f.topKey]).not.toContain(f.comment)
       expect(f.stars[f.topKey]).toBe(Math.max(...vals))
       expect(f.stars[f.lowKey]).toBe(Math.min(...vals))
       expect([...TIPS[f.lowKey], ...COMMON_TIPS]).toContain(f.tip)
     }
     expect(sums['대길'][0] / sums['대길'][1]).toBeGreaterThan(sums['흉'][0] / sums['흉'][1])
+    expect(lowCount).toBeGreaterThan(100)
   })
 })

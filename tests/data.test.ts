@@ -3,7 +3,7 @@ import { GRADES, GRADE_WEIGHTS, STAR_KEYS } from '../src/data/grades'
 import { TILES } from '../src/data/tiles'
 import { YAKU } from '../src/data/yaku'
 import { HEADLINES } from '../src/data/headlines'
-import { COMMENTS } from '../src/data/comments'
+import { COMMENTS, LOW_COMMENTS } from '../src/data/comments'
 import { TIPS, COMMON_TIPS } from '../src/data/tips'
 
 function checkPool(name: string, pool: readonly string[], min: number) {
@@ -26,6 +26,7 @@ describe('data pools', () => {
   checkPool('yaku', YAKU, 30)
   for (const g of GRADES) checkPool(`headline ${g}`, HEADLINES[g], 40)
   for (const k of STAR_KEYS) checkPool(`comment ${k}`, COMMENTS[k], 20)
+  for (const k of STAR_KEYS) checkPool(`low comment ${k}`, LOW_COMMENTS[k], 20)
   for (const k of STAR_KEYS) checkPool(`tip ${k}`, TIPS[k], 20)
   checkPool('common tips', COMMON_TIPS, 30)
   it('no 🎴 anywhere', () => {
@@ -33,6 +34,7 @@ describe('data pools', () => {
       ...YAKU,
       ...Object.values(HEADLINES).flat(),
       ...Object.values(COMMENTS).flat(),
+      ...Object.values(LOW_COMMENTS).flat(),
       ...Object.values(TIPS).flat(),
       ...COMMON_TIPS,
     ]
