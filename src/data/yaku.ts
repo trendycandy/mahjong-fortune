@@ -44,6 +44,7 @@ export const YAKU_TILE_FILTER: Record<string, (t: Tile) => boolean> = {
   대삼원: isDragon,
   역패: isHonor,
   자일색: isHonor,
+  탕야오: (t) => !isYaochu(t),
   소사희: isWind,
   대사희: isWind,
 }

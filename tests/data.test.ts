@@ -54,6 +54,8 @@ describe('data pools', () => {
     expect(names('역패')).toEqual(['동', '남', '서', '북', '백', '발', '중'])
     expect(names('자일색')).toEqual(['동', '남', '서', '북', '백', '발', '중'])
     expect(names('소사희')).toEqual(['동', '남', '서', '북'])
+    expect(names('탕야오')).toHaveLength(21)
+    expect(names('탕야오').some((n) => /^[19]|^[동남서북백발중]$/.test(n))).toBe(false)
     expect(names('대사희')).toEqual(['동', '남', '서', '북'])
     expect(YAKU).toContain('해저로월')
     expect(YAKU).toContain('하저로어')
