@@ -21,7 +21,7 @@ tests/        vitest — 결정론, 등급 분포, 별점 범위, 코멘트/팁 
 
 ## 문장 추가하기
 
-`src/data/headlines.ts`(등급별 한 줄 운세), `comments.ts`(별점 최고 항목 코멘트), `tips.ts`(별점 최저 항목 팁 + 공통 팁)에 문장을 넣으면 된다.
+`src/data/headlines.ts`(등급별 한 줄 운세), `comments.ts`(별점 최고 항목 코멘트 `COMMENTS`, 최고 별점이 2 이하일 때 쓰는 낮은 톤 `LOW_COMMENTS`), `tips.ts`(별점 최저 항목 팁 + 공통 팁)에 문장을 넣으면 된다.
 `npm test` 가 최소 개수·중복·빈 문장을 검사한다. 문장을 바꾸면 그날 이후의 결과가 달라진다(저장된 결과가 없으므로 문제 없음).
 
 ## 미리보기
