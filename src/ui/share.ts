@@ -1,18 +1,14 @@
 import type { Fortune } from '../engine/fortune'
-import { formatKorean } from './date'
 
+/** 트위터 280자(한글·이모지 2자 가중, URL 23) 안에 들어가도록 별점 줄은 빼고 짧게 구성한다. 링크·태그는 유지. */
 export function buildShareText(f: Fortune, dateKey: string, url: string): string {
-  const s = f.stars
-  const star = (v: number) => '★'.repeat(v) + '☆'.repeat(5 - v)
+  const [, m, d] = dateKey.split('-').map(Number)
   return [
-    `🀄 ${formatKorean(dateKey, false)} 마작 운세 — ${f.grade}`,
+    `🀄 ${m}월 ${d}일 마작 운세: ${f.grade}`,
     `💬 ${f.headline}`,
-    `공격운 ${star(s.attack)}  수비운 ${star(s.defense)}`,
-    `도라운 ${star(s.dora)}  흐름운 ${star(s.flow)}`,
-    `🀄 행운의 패: ${f.luckyTile.name}   🎯 행운의 역: ${f.luckyYaku}`,
+    `🀄 행운의 패 ${f.luckyTile.name} · 🎯 행운의 역 ${f.luckyYaku}`,
     `💡 ${f.tip}`,
-    '',
-    `${url}  #마작운세 #마작`,
+    `${url} #마작운세 #마작`,
   ].join('\n')
 }
 
